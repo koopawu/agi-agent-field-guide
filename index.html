@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AGI Agent 领域系统学习指南 · 产品经理与游戏策划版</title>
+<style>
+  :root{
+    --bg:#faf7f2; --paper:#fffdf9; --ink:#2e2a26; --ink-soft:#5c554d; --ink-faint:#8a8178;
+    --line:#e7dfd3; --accent:#b5793a; --accent-soft:#f3e6d3; --accent-deep:#8f5a24;
+    --sage:#6f7d64; --sage-soft:#e9ede4; --clay:#a85d4e; --clay-soft:#f5e4e0;
+    --gold:#a08b4f; --gold-soft:#f1ecd8; --radius:14px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{font-family:"PingFang SC","Hiragino Sans GB","Microsoft YaHei",-apple-system,sans-serif;
+       background:var(--bg);color:var(--ink);line-height:1.75;font-size:16px;}
+  .wrap{max-width:1060px;margin:0 auto;padding:0 24px;}
+  header.hero{padding:88px 0 56px;background:linear-gradient(180deg,#f5eee2 0%,var(--bg) 100%);border-bottom:1px solid var(--line);}
+  .kicker{display:inline-block;font-size:13px;letter-spacing:.18em;color:var(--accent-deep);
+          border:1px solid var(--accent);border-radius:999px;padding:5px 16px;margin-bottom:22px;background:var(--paper);}
+  header.hero h1{font-size:clamp(30px,4.6vw,46px);line-height:1.25;font-weight:700;letter-spacing:.01em;}
+  header.hero h1 em{font-style:normal;color:var(--accent-deep);}
+  header.hero .sub{margin-top:18px;max-width:760px;color:var(--ink-soft);font-size:17px;}
+  .meta-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px;}
+  .chip{font-size:13px;background:var(--paper);border:1px solid var(--line);border-radius:999px;padding:5px 14px;color:var(--ink-soft);}
+  nav.toc{position:sticky;top:0;z-index:50;background:rgba(250,247,242,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);}
+  nav.toc .wrap{display:flex;gap:6px;overflow-x:auto;padding-top:12px;padding-bottom:12px;}
+  nav.toc a{white-space:nowrap;text-decoration:none;color:var(--ink-soft);font-size:14px;padding:7px 14px;border-radius:999px;border:1px solid transparent;}
+  nav.toc a:hover{background:var(--accent-soft);color:var(--accent-deep);border-color:var(--accent);}
+  section{padding:64px 0 8px;}
+  .sec-tag{font-size:13px;letter-spacing:.22em;color:var(--accent-deep);font-weight:600;margin-bottom:8px;}
+  h2.sec-title{font-size:clamp(24px,3.2vw,32px);margin-bottom:10px;}
+  .sec-lead{color:var(--ink-soft);max-width:820px;margin-bottom:36px;}
+  h3{font-size:20px;margin:44px 0 16px;padding-left:12px;border-left:4px solid var(--accent);}
+  h4{font-size:16px;margin:26px 0 10px;color:var(--accent-deep);}
+  p{margin-bottom:14px;}
+  .card{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);padding:24px 26px;margin-bottom:18px;}
+  .grid{display:grid;gap:16px;}
+  .grid-2{grid-template-columns:repeat(2,1fr);}
+  .grid-3{grid-template-columns:repeat(3,1fr);}
+  .grid-4{grid-template-columns:repeat(4,1fr);}
+  @media(max-width:860px){.grid-2,.grid-3,.grid-4{grid-template-columns:1fr;}}
+  .mini-card{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);padding:18px 20px;}
+  .mini-card h5{font-size:15.5px;margin-bottom:6px;}
+  .mini-card p{font-size:14px;color:var(--ink-soft);margin:0;}
+  .analogy{display:block;margin-top:10px;font-size:13px;color:var(--sage);background:var(--sage-soft);border-radius:8px;padding:8px 12px;}
+  .analogy::before{content:"🎮 策划类比 · ";font-weight:600;}
+  .quote{border-left:3px solid var(--gold);background:var(--gold-soft);padding:14px 18px;border-radius:0 10px 10px 0;color:var(--ink-soft);font-size:15px;margin:18px 0;}
+  .tbl-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:var(--radius);background:var(--paper);margin:14px 0 22px;}
+  table{border-collapse:collapse;width:100%;font-size:14.5px;min-width:640px;}
+  th{background:#f4ecdd;text-align:left;padding:12px 14px;font-weight:600;color:var(--accent-deep);white-space:nowrap;}
+  td{padding:11px 14px;border-top:1px solid var(--line);vertical-align:top;color:var(--ink-soft);}
+  td:first-child{color:var(--ink);font-weight:600;white-space:nowrap;}
+  tr:hover td{background:#fbf7ee;}
+  .loop{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin:18px 0 8px;}
+  @media(max-width:860px){.loop{grid-template-columns:1fr;}}
+  .loop .node{background:var(--paper);border:1px solid var(--accent);border-radius:var(--radius);padding:16px 14px;text-align:center;position:relative;}
+  .loop .node b{display:block;color:var(--accent-deep);font-size:16px;margin-bottom:4px;}
+  .loop .node span{font-size:12.5px;color:var(--ink-soft);}
+  .loop .node::after{content:"→";position:absolute;right:-13px;top:50%;transform:translateY(-50%);color:var(--accent);font-weight:700;}
+  .loop .node:last-child::after{content:"↺";right:auto;left:50%;top:auto;bottom:-22px;transform:translateX(-50%);}
+  @media(max-width:860px){.loop .node::after{content:"↓";right:auto;left:50%;top:auto;bottom:-20px;transform:translateX(-50%);}
+    .loop .node:last-child::after{content:"↺";}}
+  .loop-note{text-align:center;font-size:13px;color:var(--ink-faint);margin-top:26px;}
+  .levels{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0;}
+  .level{flex:1;min-width:170px;background:var(--paper);border:1px solid var(--line);border-top:4px solid var(--gold);border-radius:10px;padding:14px;}
+  .level b{color:var(--accent-deep);}
+  .level span{display:block;font-size:13px;color:var(--ink-soft);margin-top:4px;}
+  .timeline{border-left:2px solid var(--accent);margin:18px 0 8px 8px;padding-left:26px;}
+  .tl-item{position:relative;margin-bottom:22px;}
+  .tl-item::before{content:"";position:absolute;left:-33px;top:8px;width:12px;height:12px;border-radius:50%;background:var(--accent);border:3px solid var(--accent-soft);}
+  .tl-item .t{font-size:13px;color:var(--accent-deep);font-weight:700;letter-spacing:.06em;}
+  .tl-item p{font-size:14.5px;color:var(--ink-soft);margin:2px 0 0;}
+  .stack{display:flex;flex-direction:column;gap:10px;margin:18px 0;}
+  .layer{display:grid;grid-template-columns:150px 1fr;gap:14px;background:var(--paper);border:1px solid var(--line);border-left:6px solid var(--sage);border-radius:12px;padding:14px 18px;align-items:center;}
+  @media(max-width:700px){.layer{grid-template-columns:1fr;}}
+  .layer .ln{font-weight:700;color:var(--accent-deep);font-size:15px;}
+  .layer .ln small{display:block;font-weight:400;color:var(--ink-faint);font-size:12px;}
+  .layer .lc{font-size:14px;color:var(--ink-soft);}
+  .layer .lc b{color:var(--ink);}
+  .glossary{columns:2;column-gap:16px;}
+  @media(max-width:860px){.glossary{columns:1;}}
+  .term{break-inside:avoid;background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:10px 16px;margin-bottom:10px;font-size:14px;}
+  .term b{color:var(--accent-deep);}
+  .term span{color:var(--ink-soft);}
+  .roadmap{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:16px 0;}
+  @media(max-width:860px){.roadmap{grid-template-columns:1fr;}}
+  .phase{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);padding:18px;position:relative;border-top:5px solid var(--clay);}
+  .phase .ph-tag{font-size:12px;letter-spacing:.12em;color:var(--clay);font-weight:700;}
+  .phase h5{font-size:16px;margin:6px 0 4px;}
+  .phase .ph-time{font-size:12.5px;color:var(--ink-faint);margin-bottom:8px;}
+  .phase ul{padding-left:18px;font-size:13.5px;color:var(--ink-soft);}
+  .phase li{margin-bottom:5px;}
+  ul.tight{padding-left:20px;color:var(--ink-soft);font-size:15px;}
+  ul.tight li{margin-bottom:8px;}
+  .pill{display:inline-block;font-size:12px;border-radius:6px;padding:1px 8px;margin-right:6px;font-weight:600;}
+  .pill-easy{background:var(--sage-soft);color:var(--sage);}
+  .pill-mid{background:var(--gold-soft);color:var(--gold);}
+  .pill-hard{background:var(--clay-soft);color:var(--clay);}
+  .callout{background:var(--clay-soft);border:1px solid #e3c5be;border-radius:var(--radius);padding:18px 22px;margin:18px 0;font-size:15px;}
+  .callout b{color:var(--clay);}
+  footer{margin-top:72px;border-top:1px solid var(--line);padding:32px 0 48px;color:var(--ink-faint);font-size:13px;}
+  .back-top{position:fixed;right:22px;bottom:22px;background:var(--paper);border:1px solid var(--accent);color:var(--accent-deep);
+             width:44px;height:44px;border-radius:50%;text-align:center;line-height:44px;text-decoration:none;font-size:18px;box-shadow:0 4px 14px rgba(0,0,0,.08);}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <span class="kicker">AGENT · 系统学习指南</span>
+    <h1>AGI Agent 领域<br><em>核心概念 · 知识体系 · 实践指引</em></h1>
+    <p class="sub">为「产品经理 × UGC 游戏策划」定制的 Agent 领域全景学习地图：先建立概念地基，再看清技术与行业全貌，最后落地为一条 3–6 个月可执行的转型路线。</p>
+    <div class="meta-row">
+      <span class="chip">读者画像：资深 PM / UGC 游戏策划</span>
+      <span class="chip">目标：Agent 产品经理 · AI 游戏策划 · AI 创作者生态</span>
+      <span class="chip">更新：2026-07</span>
+      <span class="chip">预计学习周期：3–6 个月</span>
+    </div>
+  </div>
+</header>
+
+<nav class="toc">
+  <div class="wrap">
+    <a href="#part1">① 核心概念</a>
+    <a href="#p1-1">定义与边界</a>
+    <a href="#p1-2">能力循环</a>
+    <a href="#p1-3">架构范式</a>
+    <a href="#p1-5">里程碑</a>
+    <a href="#p1-6">失效模式</a>
+    <a href="#p1-7">术语速查</a>
+    <a href="#part2">② 知识体系</a>
+    <a href="#p2-2">框架对比</a>
+    <a href="#p2-3">协议三件套</a>
+    <a href="#p2-5">评测体系</a>
+    <a href="#p2-7">游戏/UGC 专题</a>
+    <a href="#part3">③ 实践指引</a>
+    <a href="#p3-2">学习路线图</a>
+    <a href="#p3-3">实践清单</a>
+    <a href="#p3-5">转型策略</a>
+    <a href="#p3-6">作品集</a>
+  </div>
+</nav>
+
+<main class="wrap">
+
+<section id="part1">
+  <div class="sec-tag">PART 01</div>
+  <h2 class="sec-title">核心概念：先搞清楚 Agent 到底是什么</h2>
+  <p class="sec-lead">一句话结论：Agent 不是「更会聊天的 LLM」，而是以模型为大脑、围绕目标持续 <b>感知环境 → 规划 → 调用工具 → 记忆 → 反思</b> 的闭环系统。类比：Chatbot 是会说话的策划顾问；Agent 是拿到胜利条件、技能栏、地图和存档后，能连续推进任务的「游戏角色 + 制作人」。</p>
+
+  <h3 id="p1-1">1.1 权威定义与边界</h3>
+  <div class="grid grid-2">
+    <div class="mini-card"><h5>OpenAI（2025）</h5><p>Agent 是「代表用户独立完成任务」的系统；生产形态包含模型、工具、指令、编排与护栏。——《A Practical Guide to Building Agents》</p></div>
+    <div class="mini-card"><h5>Anthropic（2024）</h5><p>Workflow 是「按预定义代码路径编排 LLM 和工具」；Agent 则「动态指挥自己的流程与工具使用」。——《Building Effective Agents》</p></div>
+    <div class="mini-card"><h5>Google（2024）</h5><p>Agent 是扩展基础模型能力的程序，通过推理、外部信息与工具，以自导向方式规划并执行目标。——《Agents》白皮书</p></div>
+    <div class="mini-card"><h5>Lilian Weng（2023）</h5><p>LLM 是大脑，核心组件为规划（Planning）、记忆（Memory）、工具使用（Tool Use）。——《LLM Powered Autonomous Agents》</p></div>
+  </div>
+
+  <div class="tbl-wrap">
+    <table>
+      <tr><th>概念</th><th>本质区别</th><th>通俗类比</th></tr>
+      <tr><td>LLM Chatbot</td><td>以「输入—回答」为中心，通常不持续行动</td><td>资深顾问：能出方案，但等你拍板和执行</td></tr>
+      <tr><td>Workflow</td><td>分支和调用顺序由人预先写死</td><td>固定玩法脚本 / SOP：稳定，但遇到新关卡就停</td></tr>
+      <tr><td>RPA</td><td>用规则模拟点击和录入，适合结构化重复任务（IBM 概括为「做」，AI/ML 更接近「思考、学习」）</td><td>宏脚本玩家：连招快，但 UI 一改版就失灵</td></tr>
+      <tr><td>AI Agent</td><td>根据目标自主选择下一步，接收反馈并修正，可跨工具完成长任务</td><td>会看地图、接支线、换装备、复盘失误的玩家</td></tr>
+    </table>
+  </div>
+
+  <h3 id="p1-2">1.2 核心能力循环</h3>
+  <p>Agent 的运行不是一次流水线，而是一个 <b>直到目标达成、失败阈值触发或人接管</b> 的循环：</p>
+  <div class="loop">
+    <div class="node"><b>感知 Perception</b><span>读取文本、网页、屏幕、API、文件与事件<br>≈ 小地图与战斗日志</span></div>
+    <div class="node"><b>规划 Planning</b><span>拆目标、排序、预估依赖，边做边重排<br>≈ 把主线拆成任务树</span></div>
+    <div class="node"><b>行动 Action</b><span>搜索、写文件、查库、执行代码、操作浏览器<br>≈ 角色技能栏</span></div>
+    <div class="node"><b>记忆 Memory</b><span>短期=本局临时状态；长期=存档与攻略库</span></div>
+    <div class="node"><b>反思 Reflection</b><span>比对计划、结果与约束，生成下一轮策略<br>≈ 版本复盘</span></div>
+  </div>
+  <p class="loop-note">行动之后从环境获得观察（Observation），写入记忆，再进入下一轮规划 —— 循环往复。</p>
+
+  <h3 id="p1-3">1.3 关键架构范式</h3>
+  <div class="grid grid-2">
+    <div class="mini-card"><h5>ReAct（ICLR 2023）</h5><p>交替生成 Reasoning → Action → Observation，适合路径不确定的任务。<span class="analogy">敏捷试玩：每回合先看局势再放技能</span></p></div>
+    <div class="mini-card"><h5>Plan-and-Execute</h5><p>Planner 先生成完整计划，Executor 执行，必要时 Replanner 修正；适合步骤清晰的长任务。<span class="analogy">先写 GDD 和里程碑，再交给关卡团队执行</span></p></div>
+    <div class="mini-card"><h5>Reflection / Reflexion（NeurIPS 2023）</h5><p>Actor 执行、Evaluator 评价、Self-Reflection 写入情景记忆，用「语言反馈」改进后续尝试。<span class="analogy">每次失败后写复盘卡，下周目继承经验</span></p></div>
+    <div class="mini-card"><h5>Multi-Agent</h5><p>调度者把任务分给研究、代码、审核等专家 Agent 并处理交接（AutoGen 2023；Anthropic 多 Agent 研究系统 2025）。<span class="analogy">制作人 + 策划 + 程序 + QA 的迷你工作室</span></p></div>
+    <div class="mini-card"><h5>Agentic RAG</h5><p>检索前先拆解问题，检索中评估证据、补查、交叉验证再综合；区别于「一次向量检索 + 生成」。<span class="analogy">研究员不是搜一次就写稿，而是多轮查资料、核对来源</span></p></div>
+  </div>
+
+  <h3 id="p1-4">1.4 自主性等级：L1–L5</h3>
+  <p>DeepMind《Levels of AGI》（2023）把<b>能力</b>与<b>自主性</b>分开，用类似自动驾驶的分级描述人机关系。注意：这是<b>自主决策权分级</b>，不等于模型能力分级——能力强也不应自动放权。</p>
+  <div class="levels">
+    <div class="level"><b>L1 Tool</b><span>人完全控制，AI 只是被动工具</span></div>
+    <div class="level"><b>L2 Consultant</b><span>人召唤时给建议</span></div>
+    <div class="level"><b>L3 Collaborator</b><span>人机共管目标</span></div>
+    <div class="level"><b>L4 Expert</b><span>AI 主导、人监督</span></div>
+    <div class="level"><b>L5 Agent</b><span>高自主，但知道何时求助</span></div>
+  </div>
+
+  <h3 id="p1-5">1.5 为什么 Agent 被视为通往 AGI 的关键路径 · 里程碑</h3>
+  <p>OpenAI 把 AGI 定义为「在多数有经济价值的工作中超越人类的高度自主系统」。Agent 把「会想」接到「会做」：LLM 是发动机，Agent 是把发动机、方向盘、导航、油箱和刹车装成能上路的车。但 <b>Agent ≠ AGI</b>——通用性、持续学习、世界模型与安全对齐仍是未解问题。</p>
+  <div class="timeline">
+    <div class="tl-item"><div class="t">2024.10</div><p><b>Claude Computer Use</b> 公测：模型直接看屏幕、点击和输入，当时 OSWorld 仅 14.9%（Anthropic）。</p></div>
+    <div class="tl-item"><div class="t">2024.12</div><p><b>Gemini 2.0</b> 提出「agentic era」，Project Astra / Mariner 分别做通用助理与浏览器行动（Google DeepMind）。</p></div>
+    <div class="tl-item"><div class="t">2025.01</div><p><b>OpenAI Operator</b>：用 CUA 模型操作浏览器，处理订票、购物等 GUI 任务。</p></div>
+    <div class="tl-item"><div class="t">2025.02</div><p><b>Deep Research</b> 自动多步检索并合成研究报告，被 OpenAI 称为迈向 AGI 的重要一步；同期 <b>Claude Code</b> 进入研究预览。</p></div>
+    <div class="tl-item"><div class="t">2025.03</div><p><b>Manus</b> 以多模型、多 Agent 执行开放任务；MIT Technology Review 实测称其像「聪明但会走捷径的实习生」。</p></div>
+    <div class="tl-item"><div class="t">2025.05–07</div><p><b>Codex</b> 成为云端软件工程 Agent；<b>ChatGPT Agent</b> 统一浏览、研究与对话。</p></div>
+    <div class="tl-item"><div class="t">2026.02</div><p><b>Claude Sonnet 4.6</b>：OSWorld（Verified）成绩从 2024 年不足 15% 升至 72.5%，逼近人类水平（Anthropic）。</p></div>
+  </div>
+
+  <h3 id="p1-6">1.6 能力边界与失效模式（PM 必懂）</h3>
+  <div class="grid grid-2">
+    <div class="mini-card"><h5>幻觉</h5><p>把错误事实当前提，后续计划和动作全部偏航。<span class="analogy">策划引用错误玩家数据后做平衡性调整</span></p></div>
+    <div class="mini-card"><h5>循环</h5><p>重复同一无效动作、缺少停止条件。<span class="analogy">NPC 卡在门口不断撞墙</span></p></div>
+    <div class="mini-card"><h5>工具误用 / 越权</h5><p>选错 API、填错参数，或被网页提示注入劫持。<span class="analogy">把「删除数据库」按钮放进新手村技能栏</span></p></div>
+    <div class="mini-card"><h5>上下文爆炸</h5><p>网页、日志和工具输出塞满窗口，注意力衰减、成本升高（Anthropic 称 context pollution/rot）。</p></div>
+    <div class="mini-card"><h5>长程误差累积</h5><p>单步 95% 正确，30 步后整体成功率显著下降。OSWorld 2024 年最佳 Agent 仅 12.24%（人类 72.36%）——「能演示」不等于「可托付」。</p></div>
+  </div>
+  <div class="callout"><b>产品护栏清单：</b>先用 Workflow 解决确定路径，Agent 只处理开放、分支多、路径不可预知的任务。给它明确胜利条件、最小权限工具白名单、最大步数、失败阈值、结构化输出、可追溯轨迹与回放评测；付款、删除、外发等不可逆动作必须 Human-in-the-loop。</div>
+
+  <h3 id="p1-7">1.7 核心术语速查表</h3>
+  <div class="glossary">
+    <div class="term"><b>Agent 智能体</b> · <span>为达成目标而自主感知、决策并行动的系统</span></div>
+    <div class="term"><b>Goal 目标</b> · <span>系统要优化的最终结果，相当于胜利条件</span></div>
+    <div class="term"><b>Environment 环境</b> · <span>Agent 可观察并施加影响的网页、文件、软件或物理世界</span></div>
+    <div class="term"><b>Observation 观察</b> · <span>行动后从环境拿到的新反馈</span></div>
+    <div class="term"><b>Action Space 动作空间</b> · <span>Agent 被允许执行的全部动作集合</span></div>
+    <div class="term"><b>Reasoning 推理</b> · <span>基于证据和规则形成判断</span></div>
+    <div class="term"><b>Reflection 反思</b> · <span>对结果和过程做评价，并改进后续策略</span></div>
+    <div class="term"><b>Tool Use 工具使用</b> · <span>调搜索、代码、数据库、浏览器等外部能力</span></div>
+    <div class="term"><b>Function Calling 函数调用</b> · <span>模型按预定义 schema 生成函数名与参数，由程序真正执行</span></div>
+    <div class="term"><b>Context Window 上下文窗口</b> · <span>模型一次能处理的最大 token 范围</span></div>
+    <div class="term"><b>Memory 记忆</b> · <span>跨步骤保存的信息，分短期（会话内工作记忆）与长期（可跨会话召回）</span></div>
+    <div class="term"><b>RAG 检索增强生成</b> · <span>先检索外部资料，再让模型基于资料生成</span></div>
+    <div class="term"><b>Agentic RAG</b> · <span>由 Agent 规划查询、验证证据、迭代检索并综合</span></div>
+    <div class="term"><b>Orchestration 编排</b> · <span>管理循环、工具、多个 Agent、状态与交接的控制层</span></div>
+    <div class="term"><b>Handoff 交接</b> · <span>把任务控制权从一个 Agent 转给另一个</span></div>
+    <div class="term"><b>Autonomy 自主性</b> · <span>Agent 无需逐步批准即可行动的权限范围</span></div>
+    <div class="term"><b>Guardrail 护栏</b> · <span>限制输入、输出、工具和权限的规则与检查</span></div>
+    <div class="term"><b>Human-in-the-loop 人在回路</b> · <span>在审批、异常或高风险节点让人介入</span></div>
+    <div class="term"><b>Trajectory 轨迹</b> · <span>目标、观察、推理、工具调用和结果的完整运行记录</span></div>
+    <div class="term"><b>Evals 评测</b> · <span>用任务集、结局指标和轨迹评分检验可靠性</span></div>
+    <div class="term"><b>Prompt Injection 提示注入</b> · <span>外部内容伪装成指令，诱导 Agent 越权或泄密</span></div>
+    <div class="term"><b>Sandbox 沙箱</b> · <span>限制文件、网络和权限的隔离执行环境</span></div>
+    <div class="term"><b>MCP 模型上下文协议</b> · <span>Anthropic 2024 年开放的工具/数据连接标准</span></div>
+  </div>
+</section>
+
+<section id="part2">
+  <div class="sec-tag">PART 02</div>
+  <h2 class="sec-title">知识体系：看清技术栈与行业全貌</h2>
+  <p class="sec-lead">一句话总览：AI Agent = 大模型（大脑）+ 编排框架（神经中枢）+ 工具协议（手）+ 记忆数据（海马体）+ 评测观测（体检系统）+ 应用（职业）。2023 年斯坦福小镇点燃想象，2024 年 MCP 统一「接口」，2025 年 Manus / Operator / Deep Research 引爆产品化，行业正从「能跑 Demo」走向「工程化落地」。</p>
+
+  <h3 id="p2-1">2.1 技术栈六层模型</h3>
+  <div class="stack">
+    <div class="layer"><div class="ln">L6 应用层<small>面向用户的产品</small></div><div class="lc"><b>通用：</b>Manus、OpenAI Operator / Deep Research、Genspark、Kimi ｜ <b>垂直：</b>Cursor / Devin / Claude Code（编程）、Sierra / Decagon（客服）、11x / Clay（销售）、Harvey（法律）｜ <b>游戏：</b>Inworld / NVIDIA ACE（AI NPC）、PUBG Ally（CPC 队友）、Roblox Build（UGC 创作）</div></div>
+    <div class="layer"><div class="ln">L5 评测与观测层<small>做得好不好</small></div><div class="lc"><b>基准：</b>GAIA、SWE-bench、WebArena、τ-bench、OSWorld、METR 时间跨度 ｜ <b>观测：</b>LangSmith、Langfuse、Arize Phoenix、Helicone</div></div>
+    <div class="layer"><div class="ln">L4 记忆与数据层<small>记得住</small></div><div class="lc"><b>记忆框架：</b>Mem0、Zep、Letta（MemGPT）｜ <b>向量库：</b>Pinecone、Qdrant、Milvus、Weaviate ｜ <b>范式：</b>RAG、记忆流-反思-规划（Generative Agents 架构）</div></div>
+    <div class="layer"><div class="ln">L3 工具与协议层<small>动得了手</small></div><div class="lc"><b>协议三件套：</b>MCP（工具）/ A2A（协作）/ AG-UI（前端）｜ <b>执行环境：</b>Browser Use、E2B 沙箱、Computer Use ｜ Function Calling</div></div>
+    <div class="layer"><div class="ln">L2 编排框架层<small>神经中枢</small></div><div class="lc"><b>代码优先：</b>LangGraph（图）、CrewAI（角色）、AutoGen（群聊）、OpenAI Agents SDK（交接）、Google ADK（平台）｜ <b>低代码：</b>Dify、Coze（扣子）、n8n、FastGPT</div></div>
+    <div class="layer"><div class="ln">L1 基础模型层<small>大脑</small></div><div class="lc"><b>闭源：</b>GPT/o 系列、Claude、Gemini ｜ <b>开源：</b>DeepSeek-R1、Qwen、Llama ｜ <b>能力线：</b>工具调用 → Computer/Browser Use → 推理模型 → 长时任务</div></div>
+  </div>
+  <div class="quote"><b>阅读路径建议：</b>先在 Coze/Dify 上亲手搭 1 个 Bot（L2）→ 读懂 MCP/A2A/AG-UI 分工（L3）→ 精读 Generative Agents 论文（L4 + 游戏）→ 用 GAIA/SWE-bench 建立「分数直觉」（L5）→ 跟踪 Cursor / Manus / Roblox 动态（L6）。</div>
+
+  <h3 id="p2-2">2.2 主流开发框架对比</h3>
+  <div class="tbl-wrap">
+    <table>
+      <tr><th>框架</th><th>出品方 / 时间</th><th>定位</th><th>上手难度</th><th>适合人群</th><th>PM 相关度</th></tr>
+      <tr><td>LangChain / LangGraph</td><td>LangChain Inc. 2022/2024</td><td>图结构状态机编排，强流程控制、可审计</td><td>陡</td><td>工程师，复杂生产系统</td><td>中：理解「工作流即图」即可</td></tr>
+      <tr><td>CrewAI</td><td>2023</td><td>角色分工制（研究员/写手/编辑组队）</td><td>低，原型最快</td><td>快速验证、内容团队</td><td>高：角色分工直觉与策划思维一致</td></tr>
+      <tr><td>AutoGen</td><td>微软 2023</td><td>多 Agent「群聊」协商；后与 Semantic Kernel 整合为 Microsoft Agent Framework</td><td>中</td><td>微软生态、研究型任务</td><td>中</td></tr>
+      <tr><td>OpenAI Agents SDK</td><td>OpenAI 2025.3</td><td>极简四原语：Agent / Handoff / Guardrail / Tracing</td><td>最平</td><td>OpenAI 生态团队</td><td>高：概念少，最适合理解多 Agent 协作</td></tr>
+      <tr><td>Google ADK</td><td>Google 2025.4</td><td>「电池全含」平台：内置 UI、evals、部署，原生支持 A2A</td><td>中</td><td>Google Cloud 生态</td><td>中</td></tr>
+      <tr><td>Dify</td><td>开源 2023</td><td>开源低代码 LLM 应用平台，可私有化部署</td><td>中低</td><td>企业 B 端、合规场景</td><td>高：PM 可亲手搭工作流</td></tr>
+      <tr><td>Coze 扣子</td><td>字节跳动 2024</td><td>零代码 Bot 平台，插件生态 + 抖音/飞书分发；2025.7 开源</td><td>极低</td><td>个人 / 运营 / 自媒体</td><td>极高：5 分钟搭出第一个 Agent</td></tr>
+      <tr><td>Manus 类通用 Agent</td><td>Monica / 蝴蝶效应 2025.3</td><td>不是框架而是「成品」：一句话目标，自主拆解执行交付</td><td>无需开发</td><td>终端用户</td><td>高：是 PM 的竞品/对标对象</td></tr>
+    </table>
+  </div>
+  <div class="quote"><b>选型口诀</b>（综合 2025-2026 多篇横评）：原型用 CrewAI / Coze，复杂流程用 LangGraph，OpenAI 生态用 Agents SDK，企业私有化用 Dify。</div>
+
+  <h3 id="p2-3">2.3 协议三件套：MCP · A2A · AG-UI</h3>
+  <p>行业已形成清晰分工：<b>「MCP 管工具，A2A 管协作，AG-UI 管用户界面」</b>。</p>
+  <div class="grid grid-3">
+    <div class="mini-card"><h5>MCP · 工具连接</h5><p>Anthropic 2024.11 开源，被称为「AI 世界的 USB-C 接口」。统一暴露 Resources（可读数据）、Tools（可执行操作）、Prompts（模板）三类能力；2025 年初已有 1000+ 开源连接器，OpenAI / Google / 微软相继接入，后捐入 Linux 基金会。</p></div>
+    <div class="mini-card"><h5>A2A · 跨 Agent 协作</h5><p>Google 2025.4 发布。解决跨厂商 Agent 如何互相发现、分派任务——每个 Agent 发布一张 JSON「名片」（Agent Card）声明能力，任务有 submitted / working / completed 等状态；2025.6 捐入 Linux 基金会，初始 50+ 伙伴。</p></div>
+    <div class="mini-card"><h5>AG-UI · 前端接入</h5><p>CopilotKit 发起的开放协议。Agent 是长时运行、流式输出、非确定性的，传统 REST 不够用；AG-UI 用事件流标准化聊天流、状态同步、生成式 UI 与人在回路审批。</p></div>
+  </div>
+
+  <h3 id="p2-4">2.4 模型层的 Agentic 能力演进</h3>
+  <ul class="tight">
+    <li><b>工具调用训练</b>：从 Toolformer（Meta 2023）到各家原生 function calling，「会调工具」已成基座模型标配而非外挂。</li>
+    <li><b>Computer Use / Browser Use</b>：OSWorld 基准上 Claude 从 2024 年底不足 15% 提升至 2026 年初约 72%，逼近人类（72.4%）；OpenAI Operator 的 CUA 模型在 WebVoyager 达 87%。</li>
+    <li><b>长任务执行（long-horizon）</b>：METR 研究（2025）提出「50% 任务完成时间跨度」指标——前沿模型能可靠完成的任务时长约 <b>每 7 个月翻一倍</b>，2025 年初约 1 小时。这是 Agent 商业化最关键的底层曲线。</li>
+    <li><b>推理模型</b>：o1（2024.9）、DeepSeek-R1（2025.1，开源 + RL）证明「思考更久」显著提升多步推理，直接抬高 Agent 规划能力上限；R1 开源让低成本自建 Agent 成为可能。</li>
+  </ul>
+
+  <h3 id="p2-5">2.5 评测体系：为什么 Agent 评测比模型评测更难</h3>
+  <div class="tbl-wrap">
+    <table>
+      <tr><th>基准</th><th>出品方 / 年份</th><th>测什么</th><th>现状参考</th></tr>
+      <tr><td>GAIA</td><td>Meta / HuggingFace 等 2023</td><td>通用助理多步推理 + 工具使用，466 题三级难度</td><td>人类 92%，顶级 Agent L3 约 40–50%</td></tr>
+      <tr><td>SWE-bench (Verified)</td><td>Princeton 2023 / OpenAI 精选 2024</td><td>真实 GitHub issue 修复</td><td>Devin 13.8%（2024.3）→ 80%+（2025 下半年）</td></tr>
+      <tr><td>WebArena</td><td>CMU 2023</td><td>自建电商 / 论坛 / CMS 网站上完成任务</td><td>顶级 Agent 35–45% vs 人类 78%</td></tr>
+      <tr><td>τ-bench</td><td>Sierra 2024</td><td>客服场景多轮工具调用 + 政策合规一致性</td><td>零售域约 68% vs 人类 ~95%</td></tr>
+      <tr><td>OSWorld</td><td>多校联合 2024</td><td>真实桌面 OS 操作</td><td>&lt;15%（2024）→ 72%+（2026 初）</td></tr>
+    </table>
+  </div>
+  <div class="callout"><b>Agent 评测更难的五个原因：</b>① 脚手架敏感性——同一模型换框架分数可差 10–15 分，「测的是系统，不只是模型」；② 误差复利——多步任务每步错误率相乘；③ 非确定性——同一任务跑多次结果不同，需 5 次以上取中位数；④ 无成本核算——花 $50 API 费修 $5 的 bug 也算「通过」；⑤ 污染与作弊——公开基准易被针对性优化，真实任务表现通常低 20–40 个百分点。</div>
+
+  <h3 id="p2-6">2.6 行业生态地图</h3>
+  <div class="tbl-wrap">
+    <table>
+      <tr><th>赛道</th><th>代表玩家</th><th>关键事实</th></tr>
+      <tr><td>通用 Agent</td><td>Manus、OpenAI Operator、Deep Research（OpenAI / Gemini）、Genspark、Kimi</td><td>Deep Research 类产品把「研究报告生成」做到分钟级，成为首个大规模付费的通用 Agent 形态</td></tr>
+      <tr><td>编程 Agent</td><td>Cursor、Claude Code、GitHub Copilot、Devin、Windsurf</td><td>Cursor 2025 年 ARR 破 10 亿美元、估值 293 亿美元，史上最快 SaaS 增长（CB Insights 2026）；Devin 降至 $20/月</td></tr>
+      <tr><td>客服 Agent</td><td>Sierra、Decagon、Intercom Fin</td><td>τ-bench 即 Sierra 为客服场景所建</td></tr>
+      <tr><td>销售 / 营销</td><td>11x、Clay、Artisan</td><td>「AI SDR」是 2024–2025 融资热点</td></tr>
+      <tr><td>法律 / 专业</td><td>Harvey、Hebbia</td><td>Harvey 服务大型律所，估值数十亿美元级</td></tr>
+      <tr><td>基础设施</td><td>LangChain、Mem0 / Zep、Pinecone / Qdrant、LangSmith / Langfuse、E2B、Browser Use、MCP / A2A / AG-UI</td><td>卖铲子生意：MCP 生态一年内服务器数破万、SDK 月下载近亿次（TNW 2026）</td></tr>
+    </table>
+  </div>
+
+  <h3 id="p2-7">2.7 游戏 / UGC 场景中的 Agent（策划重点）</h3>
+
+  <h4>源头：斯坦福 Generative Agents 小镇实验（必读）</h4>
+  <p>2023 年 4 月，斯坦福 Joon Sung Park 团队发表《Generative Agents》（UIST 2023 最佳论文）：25 个 LLM 驱动的 Agent 住在 Smallville 小镇，<b>没有写死任何脚本</b>，却涌现出社会行为——一个 Agent 被指示办情人节派对后，邀请自发传播、有 Agent 约心仪对象赴会、众人协调时间共同到场。其<b>三段式认知架构</b>至今仍是 LLM NPC 的标准模板：</p>
+  <ul class="tight">
+    <li><b>记忆流（Memory Stream）</b>：一切经历以自然语言入库；</li>
+    <li><b>检索评分</b>：按 新近度 × 重要性 × 相关性 加权召回记忆；</li>
+    <li><b>反思与规划</b>：定期把原始观察「升华」为高层认知，再据此生成日程计划。</li>
+  </ul>
+  <div class="quote"><b>对策划的启示：</b>可信 NPC 的难点不在模型而在<b>记忆架构</b>；行为树负责「快反射」，LLM 负责「慢思考」。2024 年该团队用 1052 名真人访谈数据构建 Agent 人口，问卷复现准确率达 85%，并于 2025 年创立 Simile 做「模拟用户群」（2026 年获 Index 领投 1 亿美元）——对 UGC 平台的「虚拟玩家测试」极具参考价值。</div>
+
+  <h4>AI 队友 / 敌人：从 NPC 到 CPC（可协同角色）</h4>
+  <div class="grid grid-3">
+    <div class="mini-card"><h5>NVIDIA ACE × KRAFTON《PUBG》Ally</h5><p>业内标杆（2025–2026）：本地 ASR → 2B 小语言模型（决策核心）→ TTS；语音回复交给 TTS，<b>游戏动作交给行为树执行</b>（快反应不等待语言推理）。KRAFTON 称之为 CPC（Co-Playable Character）：能合作、能适应、能跨局记忆。</p></div>
+    <div class="mini-card"><h5>Inworld AI × 微软 Xbox</h5><p>2023.11 合作：为开发者提供「角色引擎」（动态 NPC 反应、即时对话）+ Copilot 助理（帮策划生成任务脚本树与对话草稿）。Inworld 调研：52% 玩家抱怨 NPC「只会重复对话」——这是 AI NPC 的需求原点。</p></div>
+    <div class="mini-card"><h5>国内实践</h5><p>网易《逆水寒》手游 2023 年起接入大模型驱动智能 NPC，支持自由对话与关系演化，是 MMO 中最早的规模化落地之一。</p></div>
+  </div>
+  <div class="quote"><b>架构直觉：</b>LLM 当「大脑」（理解意图、生成对话、高层决策），行为树 / 状态机当「小脑」（走位、开枪等毫秒级反应），两者通过工具调用衔接——这正是 Agent 技术栈在游戏内的镜像。</div>
+
+  <h4>UGC 创作辅助 Agent</h4>
+  <ul class="tight">
+    <li><b>Roblox Build</b>（2026.7 宣布）：移动端自然语言生成可编辑游戏 / 3D 场景，混合开源模型 + 自研模型（含 Cube：单提示生成完整 3D 场景）；移动创作 → PC 精修。同时规划<b>测试 Agent、玩家行为分析 Agent、实验优化 Agent</b>——直接把 Agent 用进运营环节。AI 生成内容与人工内容同标准审核、同机制推荐。</li>
+    <li><b>生态工具</b>：UGCraft 等第三方工具实现「2 分钟文本/图片 → 可上架 Roblox 配饰」，创作者门槛趋近于零；Newzoo 估算 2025 年全球 UGC 游戏用户超 6 亿，Roblox 占约 40%。</li>
+  </ul>
+  <div class="callout"><b>对 UGC 策划的三个判断：</b>① <b>创作者分层将被重排</b>——AI 抹平「会不会建模/写代码」的门槛后，稀缺能力变为创意与玩法设计本身，平台激励体系需相应调整；② <b>供给爆炸 → 审核与分发成为新瓶颈</b>；③ <b>「AI 生成质量 ≠ 留存质量」</b>——Roblox 坚持用同一套留存指标决定推荐，这一原则值得所有 UGC 平台借鉴。</div>
+
+  <h4>Agent 做游戏运营与内容审核</h4>
+  <ul class="tight">
+    <li><b>内容审核 Agent</b>：多模态模型 + 工具调用做 UGC 初审（图文/3D/音频），人工只处理灰度案例；关键是给 Agent 配「政策知识库」（RAG）和升级机制（guardrails）。</li>
+    <li><b>社区运营 Agent</b>：自动巡检社区舆情、生成运营周报、策划活动草案。</li>
+    <li><b>测试与平衡 Agent</b>：Roblox 的游戏测试代理、Altera《Project Sid》（2024，千级 Agent 社会模拟）展示了用 Agent 群做玩法压力测试与经济系统模拟的可能——「先让 1000 个 Agent 玩一遍再上线」正从论文走向工程。</li>
+    <li><b>虚拟玩家 / 陪玩</b>：CPC 类技术可缓解匹配冷门时段体验问题，但需警惕「玩家知情权」与生态信任问题。</li>
+  </ul>
+</section>
+
+<section id="part3">
+  <div class="sec-tag">PART 03</div>
+  <h2 class="sec-title">实践指引：从学习到转型的落地路线</h2>
+  <p class="sec-lead">核心判断：Agent 产品的核心难题不是写代码，而是 <b>任务分解、分发匹配、效果评估、生态激励</b>——这正是「推荐系统 + UGC 生态」从业者的日常。你的位置比想象中好。</p>
+
+  <h3 id="p3-1">3.1 市场信号</h3>
+  <div class="grid grid-3">
+    <div class="mini-card"><h5>需求 +178%</h5><p>2025 年前三季度 AI 产品经理招聘需求同比增长 178%（智联招聘《2025 年人工智能产业人才发展报告》）。</p></div>
+    <div class="mini-card"><h5>薪资水位</h5><p>AI PM 平均月薪 19,459 元，杭州达 28,659 元居全国前列；具备「业务量化分析 + 商业化思维」者薪资高 35%+（同报告）。</p></div>
+    <div class="mini-card"><h5>资深窗口</h5><p>岗位要求中 5–10 年经验占比 20%；猎聘《2025 年 AI 行业人才趋势报告》显示大模型人才缺口超百万，核心岗位年薪集中 35–50 万。</p></div>
+  </div>
+
+  <h3 id="p3-2">3.2 3–6 个月学习路线图</h3>
+  <p>每周投入 8–10 小时即可跑完；6 个月是稳妥版，3 个月冲刺版可将 P1 压缩至 1 周、P2/P3 并行。</p>
+  <div class="roadmap">
+    <div class="phase">
+      <div class="ph-tag">PHASE 1</div>
+      <h5>概念打底</h5>
+      <div class="ph-time">第 1–3 周 · 建立认知框架</div>
+      <ul>
+        <li>精读 Anthropic《Building Effective Agents》</li>
+        <li>OpenAI《A Practical Guide to Building Agents》</li>
+        <li>Lilian Weng《LLM Powered Autonomous Agents》</li>
+        <li>扫读吴恩达 Agentic AI 课程模块 1</li>
+        <li>输出一篇读书笔记</li>
+      </ul>
+    </div>
+    <div class="phase">
+      <div class="ph-tag">PHASE 2</div>
+      <h5>工具上手</h5>
+      <div class="ph-time">第 4–8 周 · 零/低代码跑通 3 个 Agent</div>
+      <ul>
+        <li>扣子（Coze）搭 1 个带知识库的 Bot 并发布</li>
+        <li>Dify 搭 1 个 RAG 问答</li>
+        <li>n8n 搭 1 条「抓取 → LLM 分析 → 推送」工作流</li>
+        <li>同步学 Hugging Face AI Agents Course（免费 + 认证）</li>
+      </ul>
+    </div>
+    <div class="phase">
+      <div class="ph-tag">PHASE 3</div>
+      <h5>项目实战</h5>
+      <div class="ph-time">第 9–16 周 · 做出可演示作品</div>
+      <ul>
+        <li>用 Claude Code / Cursor 做 1 个 Agent 小项目（如 UGC 内容审核 / 选题 Agent）</li>
+        <li>调 OpenAI / Claude API 实现 Function Calling demo</li>
+        <li>读 Anthropic《Writing Tools for Agents》《How we built our multi-agent research system》</li>
+      </ul>
+    </div>
+    <div class="phase">
+      <div class="ph-tag">PHASE 4</div>
+      <h5>作品沉淀</h5>
+      <div class="ph-time">第 17–24 周 · 作品集 + 影响力</div>
+      <ul>
+        <li>把 3 个项目写成复盘文章（知乎/公众号/即刻）</li>
+        <li>参加扣子 AI 工坊、WaytoAGI 黑客松</li>
+        <li>完成 Hugging Face Agents Course 认证</li>
+        <li>针对性投递 / 内推，或发起内部转岗</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3 id="p3-3">3.3 动手实践清单（难度分级）</h3>
+  <div class="tbl-wrap">
+    <table>
+      <tr><th>级别</th><th>项目</th><th>工具</th><th>产出物</th><th>耗时</th></tr>
+      <tr><td><span class="pill pill-easy">★ 零代码</span></td><td>「蛋仔地图选题助手」Bot：接入 UGC 攻略知识库，自动给创作者推荐选题</td><td>扣子 Coze / Dify</td><td>可分享的 Bot 链接</td><td>1–2 天</td></tr>
+      <tr><td><span class="pill pill-easy">★★ 低代码</span></td><td>自动化工作流：每天抓取竞品/社区热点 → LLM 摘要 → 飞书/邮件推送</td><td>n8n / Make</td><td>在线运行的 workflow</td><td>2–3 天</td></tr>
+      <tr><td><span class="pill pill-mid">★★★ 进阶</span></td><td>用 Claude Code / Cursor 做「UGC 内容质量评估 Agent」小网页；再用 Claude API 手写 Function Calling demo</td><td>Claude Code、Cursor、Claude/OpenAI API</td><td>可演示网页 + GitHub 仓库</td><td>2–4 周</td></tr>
+      <tr><td><span class="pill pill-hard">★★★ 游戏向</span></td><td>在 Roblox（Inworld AI 智能角色，免代码）或蛋仔编辑器做一个 AI NPC 对话 demo /「AI 辅助建图」流程演示</td><td>Inworld AI、Roblox Studio、蛋仔工坊编辑器</td><td>录屏 demo + 设计文档</td><td>2–3 周</td></tr>
+    </table>
+  </div>
+  <div class="quote"><b>建议顺序：</b>按 ★ → ★★★ 逐级做；游戏向项目与现有业务直接挂钩，留到作品集阶段做成「旗舰项目」。</div>
+
+  <h3 id="p3-4">3.4 资源清单（2024–2026 有效）</h3>
+  <div class="tbl-wrap">
+    <table>
+      <tr><th>名称</th><th>类型</th><th>获取方式</th></tr>
+      <tr><td>Anthropic《Building Effective Agents》</td><td>必读文章</td><td>anthropic.com/research/building-effective-agents（中文译版见腾讯云开发者社区）</td></tr>
+      <tr><td>Lilian Weng《LLM Powered Autonomous Agents》</td><td>必读博客</td><td>lilianweng.github.io（规划/记忆/工具三组件经典框架）</td></tr>
+      <tr><td>OpenAI《A Practical Guide to Building Agents》</td><td>必读指南</td><td>openai.com 官网 PDF</td></tr>
+      <tr><td>Anthropic Engineering Blog</td><td>进阶文章</td><td>anthropic.com/engineering（Writing Tools for Agents、Multi-Agent Research System、Claude Code Best Practices）</td></tr>
+      <tr><td>DeepLearning.AI《Agentic AI》（吴恩达）</td><td>课程</td><td>deeplearning.ai，反思/工具使用/规划/多智能体四大模式</td></tr>
+      <tr><td>Hugging Face AI Agents Course</td><td>课程（免费 + 认证）</td><td>huggingface.co/learn/agents-course，含「游戏中的 Agent」单元</td></tr>
+      <tr><td>微软《AI Agents for Beginners》</td><td>课程（免费）</td><td>GitHub 微软官方仓库，10 节课</td></tr>
+      <tr><td>Hugging Face ML for Games Course</td><td>游戏向课程</td><td>huggingface.co/learn，NPC 行为与程序化内容生成</td></tr>
+      <tr><td>WaytoAGI（通往 AGI 之路）</td><td>社区 / 知识库</td><td>waytoagi.com + 飞书社区，150 万+ 成员，定期黑客松</td></tr>
+      <tr><td>扣子 AI 工坊 / Coze 模板库</td><td>实践社区</td><td>coze.cn，参赛获奖可作简历背书</td></tr>
+      <tr><td>播客：十字路口 Crossing、42章经、OnBoard!、乱翻书</td><td>播客</td><td>小宇宙 App 搜索订阅（社区口碑推荐）</td></tr>
+    </table>
+  </div>
+
+  <h3 id="p3-5">3.5 岗位与能力地图 · 转型策略</h3>
+  <div class="card">
+    <h4 style="margin-top:0;">Agent PM vs 传统 PM</h4>
+    <p>传统 PM 输出确定性的功能流程；Agent PM 设计的是 <b>目标—工具—边界—评估</b> 体系：定义任务边界（什么事不该让 Agent 做）、设计工具/API 接口（Agent 的「交互界面」是 ACI）、建立评估集与 Badcase 迭代机制、管理成本/延迟/可靠性的三角权衡。</p>
+    <p style="margin-bottom:0;"><b>JD 高频词：</b>Prompt 工程、Function Calling、RAG、Workflow 编排、Agent 评估体系、MCP、多模态。<b>加分项：</b>能独立用 AI 工具做出 demo。</p>
+  </div>
+
+  <h4>经验包装的三条翻译线</h4>
+  <div class="grid grid-3">
+    <div class="mini-card"><h5>推荐系统 → Agent 分发与调度</h5><p>召回/排序/重排 ≈ Agent 的工具选择、任务路由、多 Agent 编排；CTR/留存优化 ≈ Agent 任务成功率与评估迭代。「我做过的是大规模系统里『把对的内容给对的人』，Agent 时代是『把对的工具/子任务给对的 Agent』。」</p></div>
+    <div class="mini-card"><h5>UGC 生态 → AI 创作者生态</h5><p>创作者分层激励、内容冷启动、供需匹配经验，直接平移到「AI 辅助创作」生态。蛋仔数据可作背书：AI 创作功能上线后超八成创作者表示「更有成就感」、超七成会分享生成内容（网易互娱×火山引擎公开案例，2025-10）。</p></div>
+    <div class="mini-card"><h5>游戏策划 sense → AI 玩法设计</h5><p>讲清你如何把 AI 能力（生成、NPC、动态难度）转化为留存和 UGC 供给的游戏机制。蛋仔已接入豆包 Seedream + 影眸 Rodin 实现端内 AI 3D 生成——你就在 AI 化浪潮的第一现场。</p></div>
+  </div>
+
+  <div class="callout"><b>面试立人设话术：</b>「Agent PM 的价值不是让 AI 什么都能做，而是精确定义它该做什么、怎么评估做得好不好——这和推荐系统的策略设计是同构的。」作品 demo 现场演示 &gt; 任何描述。</div>
+
+  <h4>路径选择</h4>
+  <ul class="tight">
+    <li><b>优先内部转岗</b>：网易互娱 DreamMaker 团队、蛋仔 AI 玩法 / PC 编辑器方向与业务天然相邻；内部转岗可保留职级与股票，且你掌握的 UGC 生态数据是别人没有的资源。</li>
+    <li><b>同步以外部 offer 校准身价</b>：Agent 平台公司（字节扣子、阿里、MiniMax）及 AI 游戏创业公司均在招人。</li>
+    <li><b>决策线</b>：若内部 6 个月无窗口，带作品集外部跳槽。</li>
+  </ul>
+
+  <h3 id="p3-6">3.6 作品集：最能证明 Agent 产品能力的 3 个项目</h3>
+  <div class="grid grid-3">
+    <div class="mini-card"><h5>① UGC 创作 Copilot Agent</h5><p>零代码 → 低代码演进版：扣子上线 → 接入真实蛋仔创作者 FAQ/攻略知识库 → 展示迭代过程与使用数据。<br><b>证明：</b>需求洞察 + 快速落地 + 数据迭代。</p></div>
+    <div class="mini-card"><h5>② 内容生态监控工作流</h5><p>n8n + LLM API：自动聚合社区热点/竞品动态 → LLM 分析 → 生成日报推送。附 Function Calling demo 代码仓库。<br><b>证明：</b>技术理解力 + 工程协作可信度。</p></div>
+    <div class="mini-card"><h5>③ AI 游戏玩法 demo（旗舰）</h5><p>蛋仔编辑器或 Roblox + Inworld AI 做一个 AI NPC / AI 辅助创作 demo，配完整策划案（玩法循环、创作者激励、评估指标）。<br><b>证明：</b>把 AI 能力翻译成游戏价值的稀缺能力——相对纯互联网背景候选人的<b>决定性差异化</b>。</p></div>
+  </div>
+  <div class="quote"><b>复盘结构模板：</b>问题定义 → 方案与取舍（为什么是 Agent 而不是 Workflow）→ 评估指标 → Badcase 与迭代 → 数据结果。每个项目按此结构写复盘，本身就是面试答案。</div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <p><b>主要来源</b>：Lilian Weng《LLM Powered Autonomous Agents》(2023)；Anthropic《Building Effective Agents》(2024)、《Effective Context Engineering for AI Agents》(2025)、Computer Use / Claude Code / Claude Sonnet 4.6 公告 (2024–2026)；OpenAI《A Practical Guide to Building Agents》(2025)、Operator / Deep Research / Codex / ChatGPT Agent 公告 (2025)；Google/Kaggle《Agents》白皮书 (2024)、Gemini 2.0 blog (2024)、A2A 公告 (2025)；Park et al.《Generative Agents》(UIST 2023)；ReAct (ICLR 2023)、Reflexion (NeurIPS 2023)、AutoGen (2023)、Levels of AGI (DeepMind 2023)；GAIA / SWE-bench / WebArena / τ-bench / OSWorld 各基准论文；METR 时间跨度研究 (2025)；NVIDIA × KRAFTON PUBG Ally 技术访谈 (2026)；微软 × Inworld AI 合作公告 (2023)；Roblox Build 发布报道 (2026.7)；CB Insights 编程 Agent 市场报告 (2026)；智联招聘《2025 年人工智能产业人才发展报告》；猎聘《2025 年 AI 行业人才趋势报告》；网易互娱 × 火山引擎蛋仔 AI 案例 (2025-10)。</p>
+    <p style="margin-top:8px;">可信度说明：框架对比、协议、基准数据来自多源交叉验证；个别 2025 底–2026 年行业动态仅见于单一来源（如 Manus 收购传闻），引用前建议二次核实。本页由 AI 多智能体研究流程生成，供学习参考。</p>
+  </div>
+</footer>
+
+<a class="back-top" href="#part1" title="回到顶部">↑</a>
+
+</body>
+</html>
